@@ -17,7 +17,7 @@ dependencies = [
 pythonpath = ["."]
 
 [tool.taskipy.tasks]
-run = "uvicorn main:app --reload"
+run = "uvicorn app.main:app --reload"
 kill = "netstat -ano | grep 8000"
 test = "pytest -v tests/tests.py"
 #run = "lsof -ti :8501 | xargs kill -9 | streamlit run src/app.py"

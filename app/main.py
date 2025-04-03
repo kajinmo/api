@@ -1,12 +1,44 @@
 from fastapi import FastAPI
+from typing import List, Dict
+
 
 app = FastAPI()
 
+#45:38
 
 
 @app.get("/")
 def ola_mundo():
     return {"Olá": "Mundo"}
+
+
+produtos: List[Dict[str, any]] = [
+    {
+        "id": 1,
+        "nome": "Smartphone",
+        "descricao": "um telefone",
+        "preco": 1500.0
+    },
+    {
+        "id": 2,
+        "nome": "Notebook",
+        "descricao": "um computador portátil",
+        "preco": 3500.0
+    }
+]
+
+
+@app.get("/")
+def ola_mundo():
+    return {"Olá": "Mundo"}
+
+
+# definir a rota
+@app.get("/produtos") # recebe requisições GET
+def listar_produtos(): #response
+     return produtos
+
+
 
 """
 # definir a rota
