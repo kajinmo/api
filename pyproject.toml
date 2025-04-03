@@ -1,0 +1,23 @@
+[project]
+name = "api"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "fastapi>=0.115.12",
+    "httpx>=0.28.1",
+    "taskipy>=1.14.1",
+    "uvicorn>=0.34.0",
+]
+
+
+[tool.pytest.ini_options]
+pythonpath = ["."]
+
+[tool.taskipy.tasks]
+run = "uvicorn main:app --reload"
+kill = "netstat -ano | grep 8000"
+test = "pytest -v tests/tests.py"
+#run = "lsof -ti :8501 | xargs kill -9 | streamlit run src/app.py"
+#test = "lsof -ti :8501 | xargs kill -9 | pytest tests -v"

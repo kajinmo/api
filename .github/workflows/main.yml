@@ -1,0 +1,42 @@
+name: CI
+
+on: pull_request
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v3
+
+      - name: Set up python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.12'
+
+      - name: Install uv
+        run: |
+          curl -LsSf https://astral.sh/uv/install.sh | sh
+          echo "$HOME/.cargo/bin" >> $GITHUB_PATH
+
+      - name: Configure uv cache
+        run: uv pip install --cache-dir ~/.cache/uv
+
+      - name: Cache uv packages
+        uses: actions/cache@v3
+        with:
+          path: ~/.cache/uv
+          key: ${{ runner.os }}-uv-${{ hashFiles('pyproject.toml') }}-${{ hashFiles('uv.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-uv-
+
+      # Opção 1: Usando pyproject.toml (recomendado)
+      - name: Install project with uv (from pyproject.toml)
+        run: uv pip install -e .
+
+      # Ou Opção 2: Usando uv.lock (se você tiver)
+      # - name: Install from lock file
+      #   run: uv pip sync uv.lock
+
+      - name: Run test
+        run: pytest -v tests/tests.py
