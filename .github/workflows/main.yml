@@ -1,0 +1,41 @@
+name: CI
+
+on: pull_request
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    env:
+      UV_CACHE_DIR: ~/.cache/uv
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.12'
+
+      - name: Install uv
+        run: pip install uv
+
+      - name: Create virtual environment
+        run: uv venv .venv
+
+      - name: Cache uv packages
+        uses: actions/cache@v3
+        with:
+          path: |
+            ${{ env.UV_CACHE_DIR }}
+            .venv
+          key: ${{ runner.os }}-uv-${{ hashFiles('pyproject.toml') }}
+
+      - name: Install dependencies
+        run: |
+          source .venv/bin/activate
+          uv pip install -e .
+
+      - name: Run tests
+        run: |
+          source .venv/bin/activate
+          pytest -v tests/tests.py
