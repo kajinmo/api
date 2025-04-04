@@ -1,6 +1,7 @@
 from fastapi import FastAPI
 from .schema import ProdutosSchema
 from .data import Produtos
+from typing import List
 
 app = FastAPI()
 lista_de_produtos = Produtos()
@@ -14,7 +15,7 @@ def ola_mundo():
 
 
 # definir a rota
-@app.get("/produtos", response_model=list[ProdutosSchema]) # recebe requisições GET
+@app.get("/produtos", response_model=List[ProdutosSchema]) # recebe requisições GET
 def listar_produtos():
     return lista_de_produtos.listar_produtos()
 
