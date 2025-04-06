@@ -1,0 +1,27 @@
+services:
+  postgres-db:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: produtos-db
+    environment:
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: senhanova
+      POSTGRES_DB: produtos
+      POSTGRES_INITDB_ARGS: "--encoding=UTF8"
+    volumes:
+      - produtos-db-data:/var/lib/postgresql/data
+      - ./init-postgres.sh:/docker-entrypoint-initdb.d/init-postgres.sh
+    ports:
+      - 5433:5432
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    networks:
+      - rede-produtos
+
+volumes:
+  produtos-db-data:
+    driver: local
+
+networks:
+  rede-produtos:
