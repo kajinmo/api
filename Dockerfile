@@ -1,20 +1,19 @@
-# Usa a imagem oficial do PostgreSQL mais recente
 FROM postgres:latest
-RUN localedef -i de_DE -c -f UTF-8 -A /usr/share/locale/locale.alias pt_BR.UTF-8
-ENV LANG=pt_BR.UTF-8
 
-# Carregar as Variáveis de ambiente do .env
-ARG POSTGRES_PASSWORD
-ARG POSTGRES_USER
-ARG POSTGRES_DB
+# Instala e configura o locale en_US.UTF-8
+RUN apt-get update \
+    && apt-get install -y locales \
+    && sed -i -e 's/# en_US.UTF-8 UTF-8/en_US.UTF-8 UTF-8/' /etc/locale.gen \
+    && dpkg-reconfigure --frontend=noninteractive locales \
+    && locale-gen en_US.UTF-8 \
+    && update-locale LANG=en_US.UTF-8 LC_ALL=en_US.UTF-8 \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/*
 
-# Variáveis de ambiente para configuração do PostgreSQL
-ENV POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
-ENV POSTGRES_USER=${POSTGRES_USER}
-ENV POSTGRES_DB=${POSTGRES_DB}
+# Configura o locale padrão
+ENV LANG=en_US.UTF-8
+ENV LC_ALL=en_US.UTF-8
 
-# Expõe a porta padrão do PostgreSQL
-EXPOSE 5432
-
-# Set the default command to run when starting the container
-CMD ["postgres"]
+# Copia os arquivos de configuração personalizados
+COPY custom-pg_hba.conf /tmp/custom-pg_hba.conf
+COPY custom-postgresql.conf /tmp/custom-postgresql.conf
