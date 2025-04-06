@@ -10,3 +10,4 @@ wheels/
 .venv
 anotacoes.md
 bkp.md
+conexao.py
