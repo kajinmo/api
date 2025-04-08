@@ -35,16 +35,13 @@ Base = declarative_base()
 
 def import_models():
     # Isso garante que todos os modelos sejam registrados antes da criação das tabelas
-    from .models import Base  # Ajuste o caminho conforme sua estrutura
+    from . import models  # Ajuste o caminho conforme sua estrutura
     return Base
 
 # Verifica e cria tabelas se necessário
 def verify_tables():
     inspector = inspect(engine)
     import_models()
-
-    # Debug: Mostra todas as tabelas registradas
-    print("Tabelas registradas na Base:", list(Base.metadata.tables.keys()))
     required_tables = {table.name for table in Base.metadata.tables.values()}  # Adicione outras tabelas se necessário
     
     try:

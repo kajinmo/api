@@ -22,8 +22,12 @@ dependencies = [
 pythonpath = ["."]
 
 [tool.taskipy.tasks]
-run = "uvicorn app.main:app --reload"
-kill = "netstat -ano | grep 8000"
-test = "pytest -v tests/tests.py"
+run = "docker-compose up -d && sleep 5 && uvicorn app.main:app --reload"
+kill = "docker-compose down -v"
+test = "docker-compose up -d --build && sleep 5 && pytest -v tests/tests.py && docker-compose down"
+#test = "pytest -v tests/tests.py"
+#kill = "lsof -ti:8000 | xargs -r kill -9"
+#kill = "kill -9 $(lsof -t -i:8000)"
+#kill = "netstat -ano | grep 8000"
 #run = "lsof -ti :8501 | xargs kill -9 | streamlit run src/app.py"
 #test = "lsof -ti :8501 | xargs kill -9 | pytest tests -v"
