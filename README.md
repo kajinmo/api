@@ -22,14 +22,13 @@ Projeto de API para gerenciamento de produtos com validação de dados, containe
 
 ```mermaid
 graph LR
-    User --> API
-    API --> Validator
-    Validator --> Processor
-    Processor --> DB[(PostgreSQL)]
-    DB --> Processor
-    Processor --> Validator
-    Validator --> User
-    Monitor[pgAdmin] --> DB
+    Usuario --> API
+    API --> Validação
+    Validação --> Schema
+    Schema --> DB[(PostgreSQL)]
+    DB --> Schema
+    Schema --> Validação
+    Validação --> Usuário
 ```
 
 <br>
