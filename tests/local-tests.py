@@ -1,21 +1,31 @@
 # -*- coding: utf-8 -*-
 import pytest
 from fastapi.testclient import TestClient
+from sqlalchemy import create_engine
+from sqlalchemy.orm import sessionmaker
+
 from app.main import app
-from app.database import Base, engine, SessionLocal
+from app.database import Base
 from app.models import Produto
+
+# Configuração do banco de teste em memória
+SQLALCHEMY_DATABASE_URL = "sqlite:///:memory:"
+engine = create_engine(
+    SQLALCHEMY_DATABASE_URL, connect_args={"check_same_thread": False}
+)
+TestingSessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
 # Fixture para limpar e preparar o banco de testes
 @pytest.fixture(scope="function")
 def test_db():
-    # Usa a mesma engine do database.py, mas com comportamento específico para testes
-    Base.metadata.drop_all(bind=engine)
+    # Cria todas as tabelas
     Base.metadata.create_all(bind=engine)
-    db = SessionLocal()
+    db = TestingSessionLocal()
     try:
         yield db
     finally:
         db.close()
+        Base.metadata.drop_all(bind=engine)
 
 client = TestClient(app)
 
